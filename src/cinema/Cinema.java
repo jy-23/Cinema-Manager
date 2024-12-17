@@ -1,6 +1,7 @@
 package cinema;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Cinema {
     static void printSeats(char[][] seats) {
@@ -21,16 +22,31 @@ public class Cinema {
         }
     }
 
+    static int calculateProfit(int row, int col) {
+        int totalSeats = row * col;
+        if (totalSeats <= 60) {
+            return (totalSeats * 10);
+        }
+        int frontRows = row / 2;
+        int backRows = row - frontRows;
+        return ((frontRows * col * 10) + (backRows * col * 8));
+    }
+
     public static void main(String[] args) {
         // creating cinema seats
-        int numRow = 7;
-        int numCol = 8;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the number of rows:");
+        int numRow = scanner.nextInt();
+        System.out.println("Enter the number of seats in each row:");
+        int numCol = scanner.nextInt();
+
         char[][] seats = new char[numRow][numCol];
         for (char[] rowArray : seats){
             Arrays.fill(rowArray, 'S');
         }
 
         printSeats(seats);
+        System.out.printf("%c%d",'$',calculateProfit(numRow, numCol));
 
     }
 }
