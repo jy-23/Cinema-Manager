@@ -52,6 +52,20 @@ public class Theater {
         return frontProfit + backProfit;
     }
 
+    private int calculateTicketPrice(int selectedRow) {
+        return selectedRow <= numFrontRow ? frontTicketPrice : backTicketPrice;
+    }
+
+    private void updateSeatingChart(int selectedRow, int selectedCol) {
+        seatingChart[selectedRow - 1][selectedCol - 1] = 'B';
+    }
+
+    public void printSelection(int selectedRow, int selectedCol) {
+        updateSeatingChart(selectedRow, selectedCol);
+        printSeats();
+        System.out.printf("Ticket price: $%d", calculateTicketPrice(selectedRow));
+    }
+
 
     // getters and setters
     public int getNumRow() {
@@ -62,13 +76,11 @@ public class Theater {
         return numCol;
     }
 
-    /*public int getTicketPrice(int row) {
-        return row <= numFrontRow ? frontTicketPrice : backTicketPrice;
-    }*/
-
     public int getProfit() {
         return calculateProfit();
     }
+
+
 
     public static void main(String[] args) {
         // creating cinema seats
@@ -98,11 +110,21 @@ public class Theater {
         room.printSeats();
         System.out.printf("Total income: %c%d%n",'$', room.getProfit());
 
-        /*System.out.println("Enter a row number: ");
-        int selectedRow = scanner.nextInt();
         System.out.println("Enter a row number: ");
+        int selectedRow = scanner.nextInt();
+        if (selectedRow <= 0 || selectedRow > room.getNumRow()) {
+            System.out.printf("Invalid row number.\n" +
+                    "Rows must be between 1 and %d inclusive", room.getNumRow());
+            System.exit(1);
+        }
+        System.out.println("Enter a column number: ");
         int selectedCol = scanner.nextInt();
+        if (selectedCol <= 0 || selectedCol > room.getNumCol()) {
+            System.out.printf("Invalid column number.\n" +
+                    "Columns must be between 1 and %d inclusive", room.getNumCol());
+            System.exit(1);
+        }
+        room.printSelection(selectedRow, selectedCol);
 
-        System.out.printf("Ticket price: $%d", calcTicketPrice());*/
     }
 }
