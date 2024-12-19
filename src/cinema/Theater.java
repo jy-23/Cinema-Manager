@@ -27,23 +27,7 @@ public class Theater {
         }
     }
 
-    public void printSeats() {
-        // print out cinema seating arrangement
-        System.out.println("Cinema:");
 
-        System.out.print("  ");
-        for (int i = 0; i < numRow; i++) {
-            System.out.printf("%d ", i+1);
-        }
-        System.out.println();
-        for (int i = 0; i < numRow; i++) {
-            System.out.printf("%d ", i+1);
-            for (int j = 0; j < numCol; j++) {
-                System.out.printf("%c ", seatingChart[i][j]);
-            }
-            System.out.println();
-        }
-    }
 
     private int calculateProfit() {
         int backRows = numRow - numFrontRow;
@@ -57,13 +41,43 @@ public class Theater {
     }
 
     private void updateSeatingChart(int selectedRow, int selectedCol) {
-        seatingChart[selectedRow - 1][selectedCol - 1] = 'B';
+        if (seatingChart[selectedRow - 1][selectedCol - 1] != 'B') {
+            seatingChart[selectedRow - 1][selectedCol - 1] = 'B';
+        }
+        else System.out.println("Seat already taken. Please choose another seat");
+    }
+
+    // print functions
+    public void printSeats() {
+        // print out cinema seating arrangement
+        System.out.println("Cinema:");
+
+        System.out.print("  ");
+        for (int i = 0; i < numCol; i++) {
+            System.out.printf("%d ", i+1);
+        }
+        System.out.println();
+        for (int i = 0; i < numRow; i++) {
+            System.out.printf("%d ", i+1);
+            for (int j = 0; j < numCol; j++) {
+                System.out.printf("%c ", seatingChart[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     public void printSelection(int selectedRow, int selectedCol) {
         updateSeatingChart(selectedRow, selectedCol);
         printSeats();
-        System.out.printf("Ticket price: $%d", calculateTicketPrice(selectedRow));
+        System.out.printf("Ticket price: $%d%n", calculateTicketPrice(selectedRow));
+    }
+
+    public void printMenu() {
+        System.out.println("""
+                1. Show the seats
+                2. Buy a ticket
+                0. Exit""");
     }
 
 
@@ -104,27 +118,40 @@ public class Theater {
 
         Theater room = new Theater(numRow, numCol);
 
+        int userChoice;
+        do {
+            room.printMenu();
+            userChoice = scanner.nextInt();
+            if (userChoice == 1) {
+                room.printSeats();
+            }
+            else if (userChoice == 2) {
+                System.out.println("Enter a row number: ");
+                int selectedRow = scanner.nextInt();
+                if (selectedRow <= 0 || selectedRow > room.getNumRow()) {
+                    System.out.printf("Invalid row number.\n" +
+                            "Rows must be between 1 and %d inclusive", room.getNumRow());
+                    System.exit(1);
+                }
+                System.out.println("Enter a column number: ");
+                int selectedCol = scanner.nextInt();
+                if (selectedCol <= 0 || selectedCol > room.getNumCol()) {
+                    System.out.printf("Invalid column number.\n" +
+                            "Columns must be between 1 and %d inclusive", room.getNumCol());
+                    System.exit(1);
+                }
+                room.printSelection(selectedRow, selectedCol);
+            }
+        }
+        while(userChoice != 0);
 
 
 
-        room.printSeats();
+
+        /*room.printSeats();
         System.out.printf("Total income: %c%d%n",'$', room.getProfit());
 
-        System.out.println("Enter a row number: ");
-        int selectedRow = scanner.nextInt();
-        if (selectedRow <= 0 || selectedRow > room.getNumRow()) {
-            System.out.printf("Invalid row number.\n" +
-                    "Rows must be between 1 and %d inclusive", room.getNumRow());
-            System.exit(1);
-        }
-        System.out.println("Enter a column number: ");
-        int selectedCol = scanner.nextInt();
-        if (selectedCol <= 0 || selectedCol > room.getNumCol()) {
-            System.out.printf("Invalid column number.\n" +
-                    "Columns must be between 1 and %d inclusive", room.getNumCol());
-            System.exit(1);
-        }
-        room.printSelection(selectedRow, selectedCol);
 
+        */
     }
 }
