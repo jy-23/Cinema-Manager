@@ -8,8 +8,11 @@ public class Theater {
     private final int numCol;
     private char[][] seatingChart;
     private int numFrontRow;
-    private int frontTicketPrice = 10;
-    private int backTicketPrice = 10;
+    private float frontTicketPrice = 10f;
+    private float backTicketPrice = 10f;
+
+    int numTicketsSold = 0;
+    float currentIncome = 0f;
 
     Theater(int numRow, int numCol) {
         this.numRow = numRow;
@@ -27,16 +30,14 @@ public class Theater {
         }
     }
 
-
-
-    private int calculateProfit() {
+    private float calculateMaxProfit() {
         int backRows = numRow - numFrontRow;
-        int frontProfit = numFrontRow * numCol * frontTicketPrice;
-        int backProfit = backRows * numCol * backTicketPrice;
+        float frontProfit = numFrontRow * numCol * frontTicketPrice;
+        float backProfit = backRows * numCol * backTicketPrice;
         return frontProfit + backProfit;
     }
 
-    private int calculateTicketPrice(int selectedRow) {
+    private float calculateTicketPrice(int selectedRow) {
         return selectedRow <= numFrontRow ? frontTicketPrice : backTicketPrice;
     }
 
@@ -52,7 +53,7 @@ public class Theater {
         int userChoice;
         do {
             printMenu();
-            userChoice = promptInteger(scanner, "Please enter your choice", 0, 2);
+            userChoice = promptInteger(scanner, "Please enter your choice", 0, 3);
             if (userChoice == 1) {
                 printSeats();
             }
@@ -63,6 +64,11 @@ public class Theater {
                     int selectedCol = promptInteger(scanner, "Enter a column number", 0, getNumCol());
                     if (checkSelection(selectedRow, selectedCol)) break;
                 }
+                System.out.println();
+                numTicketsSold++;
+            }
+            else if (userChoice == 3) {
+                printStatistics();
             }
         }
         while(userChoice != 0);
@@ -90,7 +96,9 @@ public class Theater {
 
     public boolean checkSelection(int selectedRow, int selectedCol) {
         if (updateSeatingChart(selectedRow, selectedCol)) {
-            System.out.printf("Ticket price: $%d%n", calculateTicketPrice(selectedRow));
+            float ticketPrice = calculateTicketPrice(selectedRow);
+            currentIncome += ticketPrice;
+            System.out.printf("Ticket price: $%.2f%n", ticketPrice);
             return true;
         }
         else System.out.println("Seat already taken. Please choose another seat");
@@ -99,9 +107,25 @@ public class Theater {
 
     public void printMenu() {
         System.out.println("""
-                1. Show the seats
-                2. Buy a ticket
-                0. Exit""");
+                --------MENU--------
+                 1. Show the seats
+                 2. Buy a ticket
+                 3. Statistics
+                 0. Exit
+                --------------------""");
+    }
+
+    public void printStatistics() {
+        System.out.printf("------------STATISTICS------------%n" +
+                "Number of purchased tickets: %d%n" +
+                "Percentage: %.2f%%%n" +
+                "Current income: $%.2f%n" +
+                "Maximum income: $%.2f%n" +
+                "----------------------------------%n",
+                numTicketsSold,
+                getPurchasePercentage(),
+                currentIncome,
+                getMaxProfit());
     }
 
     public void getUserInterface(Scanner s) {
@@ -118,8 +142,12 @@ public class Theater {
         return numCol;
     }
 
-    public int getProfit() {
-        return calculateProfit();
+    public float getMaxProfit() {
+        return calculateMaxProfit();
+    }
+
+    private double getPurchasePercentage() {
+        return ((double) numTicketsSold / (numRow * numCol)) * 100;
     }
 
 
@@ -145,6 +173,8 @@ public class Theater {
 
     public static void main(String[] args) {
         // creating cinema seats
+
+
         Scanner scanner = new Scanner(System.in);
 
         int numRow = promptInteger(scanner, "Enter the number of rows", 0, 9);
@@ -154,10 +184,7 @@ public class Theater {
 
         room.startUserInterface(scanner);
 
-        /*room.printSeats();
-        System.out.printf("Total income: %c%d%n",'$', room.getProfit());
 
-        */
 
     }
 }
