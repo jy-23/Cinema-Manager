@@ -40,11 +40,32 @@ public class Theater {
         return selectedRow <= numFrontRow ? frontTicketPrice : backTicketPrice;
     }
 
-    private void updateSeatingChart(int selectedRow, int selectedCol) {
+    private boolean updateSeatingChart(int selectedRow, int selectedCol) {
         if (seatingChart[selectedRow - 1][selectedCol - 1] != 'B') {
             seatingChart[selectedRow - 1][selectedCol - 1] = 'B';
+            return true; // success in updating
         }
-        else System.out.println("Seat already taken. Please choose another seat");
+        return false;
+    }
+
+    private void startUserInterface(Scanner scanner) {
+        int userChoice;
+        do {
+            printMenu();
+            userChoice = promptInteger(scanner, "Please enter your choice", 0, 2);
+            if (userChoice == 1) {
+                printSeats();
+            }
+            else if (userChoice == 2) {
+                while (true) {
+                    printSeats();
+                    int selectedRow = promptInteger(scanner, "Enter a row number", 0, getNumRow());
+                    int selectedCol = promptInteger(scanner, "Enter a column number", 0, getNumCol());
+                    if (checkSelection(selectedRow, selectedCol)) break;
+                }
+            }
+        }
+        while(userChoice != 0);
     }
 
     // print functions
@@ -67,10 +88,13 @@ public class Theater {
         System.out.println();
     }
 
-    public void printSelection(int selectedRow, int selectedCol) {
-        updateSeatingChart(selectedRow, selectedCol);
-        printSeats();
-        System.out.printf("Ticket price: $%d%n", calculateTicketPrice(selectedRow));
+    public boolean checkSelection(int selectedRow, int selectedCol) {
+        if (updateSeatingChart(selectedRow, selectedCol)) {
+            System.out.printf("Ticket price: $%d%n", calculateTicketPrice(selectedRow));
+            return true;
+        }
+        else System.out.println("Seat already taken. Please choose another seat");
+        return false;
     }
 
     public void printMenu() {
@@ -78,6 +102,10 @@ public class Theater {
                 1. Show the seats
                 2. Buy a ticket
                 0. Exit""");
+    }
+
+    public void getUserInterface(Scanner s) {
+        startUserInterface(s);
     }
 
 
@@ -96,62 +124,40 @@ public class Theater {
 
 
 
+    public static int promptInteger(Scanner s, String prompt, int minVal, int maxVal) {
+        int input;
+        while (true) {
+            System.out.printf("%s: ", prompt);
+            if (!s.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                s.nextLine();
+                continue;
+            }
+            input = s.nextInt();
+            if (input < minVal || input > maxVal) {
+                System.out.printf("Invalid value. Valid range: [%d - %d].%n", minVal, maxVal);
+                s.nextLine();
+                continue;
+            }
+            return input;
+        }
+    }
+
     public static void main(String[] args) {
         // creating cinema seats
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter the number of rows: ");
-        int numRow = scanner.nextInt();
-        if (numRow <= 0 || numRow > 9) {
-            System.out.println("Invalid number of rows.\n" +
-                    "Rows must be between 1 and 9 inclusive");
-            System.exit(1);
-        }
-
-        System.out.println("Enter the number of seats in each row: ");
-        int numCol = scanner.nextInt();
-        if (numCol <= 0 || numCol > 9) {
-            System.out.println("Invalid number of columns.\n" +
-                    "Columns must be between 1 and 9 inclusive");
-            System.exit(1);
-        }
+        int numRow = promptInteger(scanner, "Enter the number of rows", 0, 9);
+        int numCol = promptInteger(scanner, "Enter the number of columns", 0, 9);
 
         Theater room = new Theater(numRow, numCol);
 
-        int userChoice;
-        do {
-            room.printMenu();
-            userChoice = scanner.nextInt();
-            if (userChoice == 1) {
-                room.printSeats();
-            }
-            else if (userChoice == 2) {
-                System.out.println("Enter a row number: ");
-                int selectedRow = scanner.nextInt();
-                if (selectedRow <= 0 || selectedRow > room.getNumRow()) {
-                    System.out.printf("Invalid row number.\n" +
-                            "Rows must be between 1 and %d inclusive", room.getNumRow());
-                    System.exit(1);
-                }
-                System.out.println("Enter a column number: ");
-                int selectedCol = scanner.nextInt();
-                if (selectedCol <= 0 || selectedCol > room.getNumCol()) {
-                    System.out.printf("Invalid column number.\n" +
-                            "Columns must be between 1 and %d inclusive", room.getNumCol());
-                    System.exit(1);
-                }
-                room.printSelection(selectedRow, selectedCol);
-            }
-        }
-        while(userChoice != 0);
-
-
-
+        room.startUserInterface(scanner);
 
         /*room.printSeats();
         System.out.printf("Total income: %c%d%n",'$', room.getProfit());
 
-
         */
+
     }
 }
