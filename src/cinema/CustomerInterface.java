@@ -25,11 +25,10 @@ class CustomerInterface {
                 System.out.println("Showing Seats");
             }
             else if (userChoice == 2) {
-                //buyTicket(list.get(0), s);
-
                 printAvailableTheaters(list);
-                int theaterChoice = Main.promptInteger(s, "Please enter a theater #", 1, list.size());
-
+                int theaterChoice = Main.promptInteger(s, "Please enter a theater #", 0, list.size());
+                if (theaterChoice == 0) continue;
+                buyTicket(list.get(theaterChoice-1), s);
             }
         }
         while(userChoice != 0);
