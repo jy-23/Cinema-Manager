@@ -25,11 +25,14 @@ public class Main {
 
     public static void main(String[] args) {
         // creating cinema seats
+        /*
         Scanner scanner = new Scanner(System.in);
 
         Cinema myCinema = new Cinema("The Classic Movie Theater", scanner);
 
         System.out.println("Starting Customer Interface");
         myCinema.getCustomerInterface(scanner);
+        */
+        MySQLConnection.createMySQLConnection();
     }
 }
