@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class Cinema {
     private final String name = "Cinema Name";
     CustomerInterface cinemaInterface = new CustomerInterface();
-    EmployeeInterface employeeInterface;
     ArrayList<Theater> theaterRooms = new ArrayList<>() ;
     float totalIncome = 0;
 

@@ -14,8 +14,6 @@ public class Theater {
     private float frontTicketPrice = 10f;
     private float backTicketPrice = 10f;
 
-    Finance theaterFinance;
-
     private int numTicketsSold = 0;
     private float currentIncome = 0f;
 
