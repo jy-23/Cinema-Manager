@@ -1,13 +1,15 @@
 package cinema;
 
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
-class Theater {
-    private final int id;
-    private final int numRow;
-    private final int numCol;
-    private char[][] seatingChart;
+public class Theater {
+    private Statement statement;
+    private int numRow;
+    private int numCol;
+    //private char[][] seatingChart;
+    private char[] seatingChart;
     private int numFrontRow;
     private float frontTicketPrice = 10f;
     private float backTicketPrice = 10f;
@@ -17,11 +19,9 @@ class Theater {
     private int numTicketsSold = 0;
     private float currentIncome = 0f;
 
-    Theater(Scanner s, int id) {
-        this.id = id;
-        System.out.printf("Creating theater %d%n", id);
-        numRow = Main.promptInteger(s, "--> Enter the number of rows", 0, 9);
-        numCol = Main.promptInteger(s, "--> Enter the number of columns", 0, 9);
+    public void initialize(int row, int col, char[] seatingChart) {
+        this.numRow = row;
+        this.numCol = col;
 
         int totalSeats = numRow * numCol;
         if (totalSeats > 60) {
@@ -29,10 +29,12 @@ class Theater {
             numFrontRow = numRow / 2;
         }
 
-        seatingChart = new char[numRow][numCol];
+        this.seatingChart = seatingChart;
+        /*int seatIndex = 0;
         for (char[] rowArray : seatingChart){
-            Arrays.fill(rowArray, 'S');
-        }
+
+            Arrays.fill(rowArray, seating);
+        }*/
     }
 
     private float calculateMaxProfit() {
@@ -47,9 +49,14 @@ class Theater {
     }
 
     private boolean updateSeatingChart(int selectedRow, int selectedCol) {
-        if (seatingChart[selectedRow - 1][selectedCol - 1] != 'B') {
-            seatingChart[selectedRow - 1][selectedCol - 1] = 'B';
+        /*if (seatingChart[selectedRow - 1][selectedCol - 1] != '1') {
+            seatingChart[selectedRow - 1][selectedCol - 1] = '1';
             return true; // success in updating
+        }*/
+        int seatIndex = (selectedRow - 1) * numCol + (selectedCol -1);
+        if (seatingChart[seatIndex] != '1') {
+            seatingChart[seatIndex] = '1';
+            return true;
         }
         return false;
     }
@@ -58,7 +65,7 @@ class Theater {
     // print functions
     public void printSeats() {
         // print out cinema seating arrangement
-        System.out.println("Cinema:");
+        System.out.println("Seating Chart:");
 
         System.out.print("  ");
         for (int i = 0; i < numCol; i++) {
@@ -68,7 +75,8 @@ class Theater {
         for (int i = 0; i < numRow; i++) {
             System.out.printf("%d ", i+1);
             for (int j = 0; j < numCol; j++) {
-                System.out.printf("%c ", seatingChart[i][j]);
+                //System.out.printf("%c ", seatingChart[i][j]);
+                System.out.printf("%c ", (seatingChart[i*numRow + j] == '0') ? 'S' : 'B');
             }
             System.out.println();
         }
@@ -105,7 +113,7 @@ class Theater {
 
     public int getNumCol() { return numCol; }
 
-    public int getId() { return id; }
+    public char[] getSeatingChart() { return seatingChart; }
 
     public int getCapacity() { return numRow * numCol; }
 

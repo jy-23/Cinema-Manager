@@ -5,22 +5,19 @@ import java.util.Scanner;
 
 
 public class Cinema {
-    private final String name;
-    private int numTheaters = 0;
+    private final String name = "Cinema Name";
     CustomerInterface cinemaInterface = new CustomerInterface();
     EmployeeInterface employeeInterface;
     ArrayList<Theater> theaterRooms = new ArrayList<>() ;
-    Finance totalFinance;
+    float totalIncome = 0;
 
     // use constructor to set up initial state of Cinema;
-    Cinema(String name, Scanner s) {
-        this.name = name;
-        startEmployeeInterface(s);
+    Cinema(Scanner s) {
+        //startEmployeeInterface(s);
         // add theater rooms until user quits
 
     }
-
-    // TODO: needs to be in EmployeeInterface class
+    /*
     private void startEmployeeInterface(Scanner s) {
         int userChoice;
         do {
@@ -36,13 +33,14 @@ public class Cinema {
             }
         } while (userChoice != 0);
     }
-
+    */
+    /*
     private void addTheaterRooms(Scanner s) {
         Theater newRoom = new Theater(s, ++numTheaters);
         theaterRooms.add(newRoom);
         System.out.printf("Added theater #%d%n", newRoom.getId());
     }
-
+    */
 
     private void printTheaterList() {
         System.out.println("-----------------------------------------------------------------------------------------");
@@ -54,8 +52,7 @@ public class Cinema {
                 "PROFIT",
                 "MAX PROFIT");
         for (Theater t : theaterRooms) {
-            System.out.printf("%3d %10d %14d %8.2f %10.2f %15.2f%n",
-                    t.getId(),
+            System.out.printf("%10d %14d %8.2f %10.2f %15.2f%n",
                     t.getCapacity(),
                     t.getNumTicketsSold(),
                     t.getPurchasePercentage(),
@@ -74,8 +71,12 @@ public class Cinema {
                 --------------------""");
     }
 
-    public void getCustomerInterface(Scanner s) {
-        cinemaInterface.startCustomerInterface(s, theaterRooms);
+    public void getCustomerInterface(Scanner s, DbConnector db) {
+        cinemaInterface.startCustomerInterface(s, db);
+    }
+
+    public void incIncome(float currIncome) {
+        totalIncome += currIncome;
     }
 
 }

@@ -3,6 +3,8 @@ package cinema;
 import java.util.Scanner;
 
 public class Main {
+
+
     public static int promptInteger(Scanner s, String prompt, int minVal, int maxVal) {
         int input;
         while (true) {
@@ -22,17 +24,16 @@ public class Main {
         }
     }
 
-
     public static void main(String[] args) {
-        // creating cinema seats
-        /*
-        Scanner scanner = new Scanner(System.in);
+        DbConnector db = new DbConnector();
+        db.createConnection();
 
-        Cinema myCinema = new Cinema("The Classic Movie Theater", scanner);
+        Scanner scanner = new Scanner(System.in);
+        Cinema myCinema = new Cinema(scanner);
 
         System.out.println("Starting Customer Interface");
-        myCinema.getCustomerInterface(scanner);
-        */
-        MySQLConnection.createMySQLConnection();
+        myCinema.getCustomerInterface(scanner, db);
+
+        db.closeConnection();
     }
 }
